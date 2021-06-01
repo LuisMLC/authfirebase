@@ -14,22 +14,9 @@ import {createStackNavigator} from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {Input, Button} from 'react-native-elements';
 
-import * as firebase from 'firebase';
+import fb from './config/firebase_config';
 
 const Stack = createStackNavigator();
-
-const firebaseConfig = {
-  apiKey: 'AIzaSyD8O1FPhOq1qiBvJ7AQIqqXc-NnIx24fyA',
-  authDomain: 'authtest-8f2d9.firebaseapp.com',
-  projectId: 'authtest-8f2d9',
-  storageBucket: 'authtest-8f2d9.appspot.com',
-  messagingSenderId: '258489840836',
-  appId: '1:258489840836:web:01a9bf8b24b885ef040591',
-};
-
-if (!firebase.apps.length) {
-  firebase.initializeApp(firebaseConfig);
-}
 
 const App = () => {
   return (
@@ -62,15 +49,14 @@ const AuthenticationScreen = ({navigation}) => {
   }
 
   useEffect(() => {
-    const subscriber = firebase.auth().onAuthStateChanged(onAuthStateChanged);
+    const subscriber = fb.auth().onAuthStateChanged(onAuthStateChanged);
     return subscriber; // unsubscribe on unmount
   }, []);
 
   if (initializing) return null;
 
   const login = () => {
-    firebase
-      .auth()
+    fb.auth()
       .signInWithEmailAndPassword(email, password)
       .then(() => {
         clearInputs();
@@ -101,8 +87,7 @@ const AuthenticationScreen = ({navigation}) => {
   };
 
   const signOut = () => {
-    firebase
-      .auth()
+    fb.auth()
       .signOut()
       .then(() => {
         setEmail('');
@@ -119,8 +104,7 @@ const AuthenticationScreen = ({navigation}) => {
       alert('Password must be at least 6 characters!');
       return;
     } else {
-      firebase
-        .auth()
+      fb.auth()
         .createUserWithEmailAndPassword(email, password)
         .then(() => {
           Alert.alert(null, 'User account created & signed in');
